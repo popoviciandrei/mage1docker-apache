@@ -1,0 +1,45 @@
+httpd:
+  build:  ./httpd/
+  environment:
+    XDEBUG_CONFIG: remote_host=192.168.99.100
+  ports: 
+    - 80:80
+  links:
+    - mysql
+  volumes_from:
+    - app
+
+app:
+  image: php:5.6-apache
+  volumes:
+    - ./www:/var/www/html
+  command: "true"
+
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  ports:
+    - 8080:80
+  links:
+    - mysql
+  environment:
+    PMA_HOST: mysql
+
+
+mysql:
+  image: mysql:latest
+  ports:
+    - 3306:3306
+  volumes_from:
+    - data
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: magento
+    MYSQL_USER: root
+    MYSQL_PASSWORD: root
+
+data:
+  image: mysql:latest
+  volumes: 
+    - /var/lib/mysql
+  command: "true"
+
